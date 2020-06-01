@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 类抽象了对象的行为
+        // 对象指某一个，通过实例化可以创建一个对象   
+        // 类方法是定义在类里面的方法
+        class Person {
+            constructor(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            say() {
+                console.log('你的名字是', this.name);
+            }
+        }
+        // var person = new Person('ll', 12);
+        // person.say();
+        // // console.log(person)
+
+        // class Son extends Person {
+        // }
+        // var son = new Son('child', 6)
+        // console.log(son)
+        
+        // super访问和调用父类上的函数，可以调用父类的构造函数和普通函数
+        // 在这里super相当于把A的constructor给执行了，
+        // 并且让方法中的this是B的实例，super当中传递的实参都是在给A的constructor传递。
+        class Dong extends Person {
+            constructor(name, age, sex) {
+                super(name, age)
+                // this.name = name;
+                this.sex = sex;
+            }
+            say() {
+                super.say();
+                console.log(32434)
+            }
+        }
+        var dong = new Dong('dongdong', 12, '女');
+        dong.say();
+        console.log(dong)
+    </script>
+</body>
+</html>

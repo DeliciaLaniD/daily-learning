@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <script>
+       var arr = ['abc', 'hah', 'haode', 'bbs']
+    //    arr.forEach((value, index, arr) => {
+    //        console.log('%c 🍍 arr: ', 'font-size:20px;background-color: #6EC1C2;color:#fff;', arr);
+    //        console.log('%c 🍛 index: ', 'font-size:20px;background-color: #FCA650;color:#fff;', index);
+    //        console.log('%c 🥃 value: ', 'font-size:20px;background-color: #E41A6A;color:#fff;', value);
+    //    })
+    // var aa = arr.filter((item) => {
+    //     return item.length === 3;
+    // })
+    // console.log(aa) //  ["abc", "hah"]
+    // var aa = arr.some((item) => {
+    //     return item === 'abc';
+    // })
+    // console.log(aa) // true
+
+    // var aa = arr.every((item) => {
+    //     return item.length <= 3;
+    // })
+    // console.log(aa) // false
+
+    var arr = [4,2,5,1,7]
+    // var aa = arr.sort((a, b) => {
+    //     return a - b;
+    // })
+    // console.log(aa) // [1,2,4,5,7]
+
+    var result = arr.reduce((pre, cur) => {
+        return pre + cur;
+    })
+    console.log(result)
+   </script> 
+</body>
+</html>
