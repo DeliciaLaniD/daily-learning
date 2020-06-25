@@ -113,3 +113,9 @@ var threeSum = function (nums) {
   }
   return arr;
 }
+
+
+this.networkInfo.privateIpv4.push(item.privateNetworkIpv4);
+this.networkInfo.privateIpv6.push(item.privateNetworkIpv6);
+this.networkInfo.publicIpv4.push() = item.publicNetworkIpv4;
+this.networkInfo.publicIpv6.push() = item.publicNetworkIpv6;
