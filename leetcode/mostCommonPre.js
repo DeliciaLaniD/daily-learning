@@ -37,3 +37,22 @@ var longestCommonPrefix = function(strs) {
     return strFirst;
 };
  console.log(longestCommonPrefix(strs))
+
+ var longestCommonPrefix = function(strs) {
+    // 以数组中的第一个元素为基准
+    let strFirst = strs[0];
+    if(strs.length === 0 || strFirst.length === 0) return "";
+    var str = strFirst.split('');
+    for (var i = 0; i < str.length; i++) {
+        for (var j = 1; j < strs.length; j++) {
+            // 第一个元素的子元素与数组后续元素的每一个子元素作比较
+            if (str[i] == strs[j].charAt(i)) {
+                console.log()
+                continue;
+            } else {
+                return strFirst.substring(0, i);
+            }
+        }
+    }
+    return strFirst;
+};
