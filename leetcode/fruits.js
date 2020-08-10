@@ -4,7 +4,7 @@ var totalFruit = function(tree) {
   let i = 0, j = 0;
   let obj = {};
   let count = 0;
-  let res = 0;
+  let result = 0;
   while(i < tree.length) {
     if (!obj[tree[i]]) {
       obj[tree[i]] = 1;
@@ -12,7 +12,6 @@ var totalFruit = function(tree) {
     } else {
       obj[tree[i]]++
     }
-    console.log(obj)
     while(count > 2) {
       obj[tree[j]]--;
       if (obj[tree[j]] === 0) {
@@ -20,10 +19,9 @@ var totalFruit = function(tree) {
       }
       j++;
     }
-    res = Math.max(res, i - j + 1);
+    result = Math.max(result, i - j + 1);
     i++                                                     
   }
-  console.log(res);
-  return res;
+  return result;
 };
 totalFruit(tree);
