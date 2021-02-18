@@ -8,8 +8,7 @@ var isLongPressedName = function(name, typed) {
     let right = 0;
     let temp;
     if(name[0] !== typed[0]) return false;
-    while(left <= name.length && right <= typed.length && left <= right) {
-        debugger;
+    while(left < name.length && right < typed.length && left <= right) {
         let num = 0;
         temp = name[left];
         let num2 = 0;

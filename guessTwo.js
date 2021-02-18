@@ -3,7 +3,7 @@ var findString = function(words, s) {
 };
 
 function fun(low, high, words, s) {
-    let mid = low + ( (high - low) >> 1 );
+    let mid = low + ((high - low) >> 1 );
     debugger
     console.log('%c 🍬 mid: ', 'font-size:20px;background-color: #ED9EC7;color:#fff;', mid);
     if (mid > high) {
