@@ -5,6 +5,16 @@
 // // 输入: s = "abcdefg", k = 2
 // // 输出: "bacdfeg"
 var reverseStr = function(s, k) {
-
+    let result = '', n = 0;
+    for (let i = 0; i < s.length; i += k) {
+        let t = s.slice(i, i + k);
+        n++;
+        if (n % 2 === 1) {
+            t = t.split('').reverse().join('');
+        }
+        result = result + t;
+    }
+    return result;
 };
-s = "abcdefg", k = 2
+let s = "abcdefg", k = 2
+console.log(reverseStr(s, k))
