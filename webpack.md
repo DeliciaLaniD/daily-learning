@@ -104,7 +104,7 @@ plugins: [
   * 懒加载/预加载
   * pwa
 
-### 优化打包构建速度---HMR（Hot Module Replacement）热模块更新
+## 优化打包构建速度---HMR（Hot Module Replacement）热模块更新
 **问题**：当我们修改css文件样式的时候，js文件也会重新打包。若有100个模块，100个样式文件，只要修改一个文件，另外的所有文件都会重新打包，速度将非常慢。如果一个模块修改，只打包该模块？
 
 **作用**：一个模块发生变化，只会重新打包该模块，而不是所有模块 =》 极大提升构建速度。
@@ -119,7 +119,7 @@ devServer: {
 }
 ```
 
-### oneOf
+## oneOf
 **问题**：在一个配置文件中，rules里面非常多的loader规则，会有处理图片的url-loader，处理css、less的style-loader/less-loader等，正常来讲，每个不同类型的文件在loader转换时，都要将module里面rules中的所有loader遍历一遍，如果符合，就被对应loader处理，不符合则直接过。这样对性能不好。
 
 **作用**：使用oneOf 根据文件类型加载对应的loader，只要能匹配一个即可退出。
@@ -183,7 +183,7 @@ module: {
 },
 ```
 
-### babel缓存
+## babel缓存
 **问题**：在编译过程中，比如有100个js模块，当有一个改动的时候，另外99个模块应该保持不变，不再重新编译。与HMR有点类似，但是呢，在生产环境下不能使用HMR，因为HMR是基于devServer的，而生产环境不需要devServer。
 
 **作用**：babel先将之前的100个文件，编译后的文件进行缓存，如果文件没有变化的话，直接使用缓存，而不会重新编译。
@@ -204,7 +204,7 @@ use: {
 }
 ```
 
-### 文件资源缓存
+## 文件资源缓存
 **作用**: 让代码上线运行缓存更好使用。
 hash: 每次wepack构建时会生成一个唯一的hash值。
   问题: 因为js和css同时使用一个hash值。
@@ -214,8 +214,13 @@ chunkhash：根据chunk生成的hash值。如果打包来源于同一个chunk，
     因为css是在js中被引入的，所以同属于一个chunk
 contenthash: 根据文件的内容生成hash值。不同文件hash值一定不一样   
 
+## webpack 5当中添加了用于长期缓存的新算法。在生产模式下默认启用这些功能。
+```javascript
+chunkIds: "deterministic", moduleIds: "deterministic"
+```
 
-### tree shaking
+
+## tree shaking
 https://www.cnblogs.com/lzkwin/p/11878509.html
 **前提**：
   1. 必须使用ES6模块化？因为tree-shaking是针对静态结构进行分析，只有import和export是静态的导入和导出。而commonjs有动态导入和导出的功能，无法进行静态分析。
@@ -247,9 +252,12 @@ export function cube(x) {
 "sideEffects": ["*.css", "*.less"]
 
 **问题**：比如b引用了a文件，index.js为入口文件引入了b.js，而a文件里面是一个对象，包含name，age，如果在index.js文件中只使用了name属性，ange属性没有使用，这个时候，webpack 4 还会将age属性编译。
+
 **webpack 5 tree shaking作用：**：打包体积更小，将近减少1kb
 
-**实现：**:
+  1.webpack能够处理嵌套模块的tree shaking
+
+**代码实现：**:
 ```javascript
 // a.js
 function a () {
@@ -276,7 +284,24 @@ console.log('hello world');
 https://blog.csdn.net/wu_xianqiang/article/details/112432235
 最后发现产出的代码是：把a文件里面的部分代码被删除掉了。删除了没有使用到的b函数，正确的保留了a函数。注意webpack4是做不到这一点的，只有webpack5才又这个功能。webpack 4 没有分析模块的导出和引用之间的依赖关系。webpack 5 有一个新的选项 optimization.innerGraph，在生产模式下是默认启用的，它可以对模块中的标志进行分析，找出导出和引用之间的依赖关系。
 
-# 代码分割
+2.webpack能够处理多个模块之间的关系
+```javascript
+import { something } from './something';
+function usingSomething() {
+  return something;
+}
+export function test() {
+  return usingSomething();
+}
+```
+https://zhuanlan.zhihu.com/p/41795312
+https://blog.csdn.net/weixin_45047039/article/details/110387613
+上述代码中，当设置了"sideEffetcs: false"时，一旦发现test方法没有使用，不但删除test，还会删除./something。
+sideEffects 是什么呢？我用一句话来概括就是：让webpack去除tree shaking带来副作用的代码。false为了告诉webpack我这个npm包里的所有文件代码都是没有副作用的
+3.webpack还能处理对CommonJs的tree shaking
+
+
+## 代码分割
 **问题**：比如在入口js文件中引入了lodash库，没做处理的话，在打包的时候，会打包到一个文件中，特别大，lodash占用了很大内存。如果在a中引入lodash，b中同样引入了lodash，那么会打包两次。
 
 **作用**：将打包生成的一个文件，分割成多个文件，分割成多个文件之后，各个文件代码体积小，同时并行加载，加载速度更快，同时实现按需加载。
@@ -315,15 +340,17 @@ import(/* webpackChunkName: 'test' */'./test')
     console.log('文件加载失败~');
   });
 ```
+## 在上述代码中，若不添加webpackChunkName，那么打包之后的文件名称就是生成的id，而在webpack 5当中，在开发环境当中，可以不使用import(/* webpackChunkName: 'test' */'./test')来为chunk命名了，生产环境仍然有必要。webpack内部有chunk命名规则，不再是以id（0,1,2）来命名了
 
 
-  # lazy loading
-  所谓的懒加载就是利用代码分割，将代码分割的import语法放入到一个异步的回调函数中，这个异步的回调函数作为懒加载代码的触发条件。
-  js文件的懒加载，懒加载的前提条件是先进行代码分割，将代码分割成单独的js文件，再对这个单独的文件进行懒加载
-  比如有两个文件，每个文件中都涉及相应的函数，我们想要其中一个文件中的函数在进行操作之后再执行，但是当打包后发现事件还没有触发，就
-  执行了，这个时候需要添加懒加载
-  不会重复加载，当第一次加载完之后，第二次会读取缓存，不会重新加载
+## lazy loading
+**问题**：比如有两个文件，每个文件中都涉及相应的函数，我们想要其中一个文件中的函数在进行操作之后再执行，但是当打包后发现事件还没有触发，就执行了，这个时候需要添加懒加载。不会重复加载，当第一次加载完之后，第二次会读取缓存，不会重新加载。
 
+**前提**：先进行代码分割，将代码分割成单独的js文件，再对这个单独的文件进行懒加载。
+
+**特点**：所谓的懒加载就是利用代码分割，将代码分割的import语法放入到一个异步的回调函数中，这个异步的回调函数作为懒加载代码的触发条件。
+
+**代码配置**：
 ```javaScript
 document.getElementById('btn').onclick = function() {
   // 懒加载~：当文件需要使用时才加载~
@@ -337,8 +364,8 @@ document.getElementById('btn').onclick = function() {
 ```
 
 
-# PWA
-使得网页也可以像APP一样，离线也可以访问，渐进式网络开发应用程序，目前淘宝使用了（程序离线了也可以使用）
+## PWA渐进式网络开发应用程序
+使得网页也可以像APP一样，离线也可以访问，目前淘宝使用了（程序离线了也可以使用）。
 workbox->workbox-webpack-plugin
 /*
   1. eslint不认识 window、navigator全局变量
@@ -370,7 +397,7 @@ if ('serviceWorker' in navigator) {
 }
 ``` 
 
-dll可以对第三方库进一步进行处理
+## dll可以对第三方库进一步进行处理
 
 
 webpack 5
@@ -403,3 +430,9 @@ module.exports = {
   ]
 };
 ```
+
+
+## Output
+webpack 4默认只能输出ES5代码
+webpack 5开始新增一个属性output.ecmaVersion，可以生成ES5和ES6/ES 2015代码
+output.ecmaVersion：2015
