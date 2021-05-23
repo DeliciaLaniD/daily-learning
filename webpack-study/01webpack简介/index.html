@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <!-- 直接运行是无法加载的，需要一个工具将less->css   -->
-    <link rel="stylesheet" href="index.less">
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
     <h1 id="title">hello, webpack;</h1>
     <!-- 直接运行，浏览器无法识别；需要一个工具   -->
-    <script src="index.js"></script>
+    <div id='bodyOne' style="border: 1px solid blue; width: 100px; height: 100px; background-color: #fff;"></div>
+    <!-- <script src="index.js"></script> -->
+    <script>
+        document.getElementById('title').click(() => {
+            console.log(123)
+            document.getElementsById('bodyOne').style.width = '200px'
+        })
+    </script>
 </body>
 </html>

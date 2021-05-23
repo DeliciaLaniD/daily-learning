@@ -11,6 +11,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/js/index.js',
   output: {
+    // 只有入口文件才会输出到该文件
     filename: 'js/built.js',
     path: resolve(__dirname, 'build')
   },

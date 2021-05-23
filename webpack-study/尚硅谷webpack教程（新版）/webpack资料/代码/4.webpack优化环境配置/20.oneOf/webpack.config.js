@@ -20,6 +20,7 @@ const commonCssLoader = [
   }
 ];
 
+// rules里面非常多的loader规则，如果不做优化，每一个文件都会被这些loader过一遍，有些loader处理不了
 module.exports = {
   entry: './src/js/index.js',
   output: {

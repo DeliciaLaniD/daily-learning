@@ -67,6 +67,7 @@ module.exports = {
 
 /*
   source-map: 一种 提供源代码到构建后代码映射 技术 （如果构建后代码出错了，通过映射可以追踪源代码错误）
+  会生成一个map文件，提供了一种源代码到构建后代码的一种映射关系
 
     [inline-|hidden-|eval-][nosources-][cheap-[module-]]source-map
 
@@ -77,12 +78,12 @@ module.exports = {
       错误代码准确信息 和 源代码的错误位置
     hidden-source-map：外部
       错误代码错误原因，但是没有错误位置
-      不能追踪源代码错误，只能提示到构建后代码的错误位置
+      不能追踪源代码错误，只能提示到构建后代码的错误位置，防止代码泄漏
     eval-source-map：内联
       每一个文件都生成对应的source-map，都在eval
       错误代码准确信息 和 源代码的错误位置
     nosources-source-map：外部
-      错误代码准确信息, 但是没有任何源代码信息
+      错误代码准确信息, 但是没有任何源代码信息，防止代码泄漏
     cheap-source-map：外部
       错误代码准确信息 和 源代码的错误位置 
       只能精确的行

@@ -8,8 +8,10 @@ process.env.NODE_ENV = 'production';
 
 // 复用loader
 const commonCssLoader = [
+  // 默认配置直接这样写就好了
   MiniCssExtractPlugin.loader,
   'css-loader',
+  // 修改配置的话，就放在这个对象里面
   {
     // 还需要在package.json中定义browserslist
     loader: 'postcss-loader',
