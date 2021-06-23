@@ -4,6 +4,8 @@
 
 ## webpack是什么？
     webpack是一个用于现代JavaScript应用程序的静态模块打包工具。当 webpack处理应用程序时，它会在内部构建一个依赖图(dependency graph)，此依赖图对应映射到项目所需的每个模块，并生成一个或多个bundle。
+    
+首先webpack会有一个入口文件，比如index.js文件，在这个文件当中会引入很多资源，比如说css/less/图片/字体等等其他资源，这个时候index.js文件中会记录这些资源，依赖形成一棵树状结构图，就是我们在项目当中引入的文件，引入的这些文件会形成一个chunk，就是所谓的代码块。这些chunk经过处理，也就是less编译成css等，高级语法处理成低级语法，这样一个过程就是打包，打包之后会形成一个文件或多个文件，就是bundle。
 
 **静态模块**？在入口文件中，比如index.js文件中，引入了sass文件，less文件等，其实这些就是静态模块，每个文件都可以看做是一个模块。
 
@@ -19,14 +21,10 @@
 
 **结论**:在开发应用时使用Webpack，开发库时使用Rollup。
 
-<font color=#00ffff>**下一代项目构建工具Vite**</font>
-
-webpack每次启动项目，都需要预打包，打包一个bundle后，才能启动dev server，这也是每次npm run dev都需要三分钟的原因，vite利用浏览器自带的import功能，避开了这一步。
-
-目前，Vite已经和vue解耦，逐渐成为新型框架首选的工程化工具。
-
 ## 开发服务器，devServer
+他只是本地的文件服务，不会对代码进行打包。
 **问题**：每次改动代码之后，都需要重新打包，因为运行项目加载的包里面并没有当前改动的代码，这样每次改动，每次打包，依次循环，会重复打包。
+
 **作用**：用于自动化-自动编译、自动打包、自动刷新浏览器等。
 
 **特点**：只会在内存中编译打包，不会有任何输出。
@@ -44,7 +42,7 @@ devServer: {
 ```
 
 ## 为什么打包后的文件中没有css文件？
-因为css-loader的原因，会将样式资源打包的js中，因此样式资源并不会输出，是与js文件融为一体的。
+因为css-loader的原因，会将样式资源打包到js中，因此样式资源并不会输出，是与js文件融为一体的。
 
 ## 单独提取css 
 ```javaScript
@@ -192,13 +190,20 @@ module: {
 
 **新的问题**：当修改了一个js文件之后，因为强制缓存期间并没有读取服务器，而是直接从缓存里拿数据，出现严重bug，需要紧急修复，但是因为被强制缓存，无法进行修复，这个时候，通过Hash值来改变文件名称。
 
+babel-loader在执行的时候，可能会产生一些运行期间重复的公共文件，造成代码体积大冗余，同时也会减慢编译效率
+
 **代码配置**：
 ```javascript
 use: {
-  // babel会将高级语法编译成浏览器可识别的ES5语法。
+  // babel会将高级语法编译成浏览器可识别的js语法。
+  // babel-loader的缓存流程，首先用cypto根据内容生成文件hash值作为cachekey，然后用fs去读文件是否存在，如果不存在用babel-loader转一层之后用zlib来压缩写入缓存。根据文件内容进行缓存。
+  // cache-loader先根据cache-loader版本号文件名生成cacheKey，作为文件名。根据modifytime来做缓存，控制整个loader流程要不要走，返回回去，后面的loader都不走了。
   // https://segmentfault.com/a/1190000017898866?utm_source=tag-newest
+  // 不处理下述中的js文件，从而优化处理加快速度
+  exclude: /node_modules/,
   loader: 'babel-loader',
   options: {
+    // cacheDirectory：默认值为 false。当有设置时，指定的目录将用来缓存 loader 的执行结果。之后的 webpack 构建，将会尝试读取缓存，来避免在每次执行时，可能产生的、高性能消耗的 Babel 重新编译过程(recompilation process)。如果设置了一个空值 (loader: 'babel-loader?cacheDirectory') 或者 true (loader: babel-loader?cacheDirectory=true)，loader 将使用默认的缓存目录 node_modules/.cache/babel-loader，如果在任何根目录下都没有找到 node_modules 目录，将会降级回退到操作系统默认的临时文件目录。
     cacheDirectory: true
   }
 }
@@ -206,15 +211,18 @@ use: {
 
 ## 文件资源缓存
 **作用**: 让代码上线运行缓存更好使用。
-hash: 每次wepack构建时会生成一个唯一的hash值。
+
+**hash**: 每次wepack构建时会生成一个唯一的hash值。
   问题: 因为js和css同时使用一个hash值。
     如果重新打包，会导致所有缓存失效。（可能我却只改动一个文件）
-chunkhash：根据chunk生成的hash值。如果打包来源于同一个chunk，那么hash值就一样
-  问题: js和css的hash值还是一样的
-    因为css是在js中被引入的，所以同属于一个chunk
-contenthash: 根据文件的内容生成hash值。不同文件hash值一定不一样   
+
+**chunkhash**：根据chunk生成的hash值。如果打包来源于同一个chunk，那么hash值就一样。
+问题: js和css的hash值还是一样的，因为css是在js中被引入的，所以同属于一个chunk。
+
+**contenthash**: 根据文件的内容生成hash值。不同文件hash值一定不一样。   
 
 ## webpack 5当中添加了用于长期缓存的新算法。在生产模式下默认启用这些功能。
+Webpack 5 针对 moduleId 和 chunkId 的计算方式进行了优化，增加确定性的 moduleId 和 chunkId 的生成策略。moduleId 根据上下文模块路径，chunkId 根据 chunk 内容计算，最后为 moduleId 和 chunkId 生成 3 - 4 位的数字 id，实现长期缓存，生产环境下默认开启。
 ```javascript
 chunkIds: "deterministic", moduleIds: "deterministic"
 ```
@@ -432,7 +440,18 @@ module.exports = {
 ```
 
 
-## Output
+### Output
 webpack 4默认只能输出ES5代码
 webpack 5开始新增一个属性output.ecmaVersion，可以生成ES5和ES6/ES 2015代码
 output.ecmaVersion：2015
+
+webpack每次启动项目，都需要预打包，打包一个bundle后，才能启动dev server，这也是每次npm run dev都需要三分钟的原因，vite利用浏览器自带的import功能，避开了这一步。
+
+目前，Vite已经和vue解耦，逐渐成为新型框架首选的工程化工具。
+
+<font color=#00ffff>**下一代项目构建工具Vite**</font>
+
+过去一年，前端构建工具创新不断，Vite、Snowpack 等新型构建工具兴起，webpack 5 也做了大刀阔斧的改进。
+要充分用上这些新工具的独特能力，如更快的模块热更新、跨模块代码复用、强构建缓存等，我们的项目代码也需要与时俱进。
+
+webpack5里面甩掉了很多历史包袱，让代码更加严谨、规范化才能正常运行。
