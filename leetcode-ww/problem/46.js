@@ -14,3 +14,24 @@
 
 // 输入：nums = [1]
 // 输出：[[1]]
+function dfs(nums, idx, arr, result) {
+    debugger;
+    if (arr.length === nums.length) {
+        result.push(arr);
+        return;
+    }
+    for (let i = idx; i < nums.length; i++) {
+        if (arr.length === nums.length) {
+            arr.pop();
+        }
+        arr.push(nums[i]);
+        i += 1;
+        dfs(nums, i, arr, result);
+    }
+}
+function initQuestionsList(nums) {
+    var result = [];
+    dfs(nums, 0, [], result);
+    return result;
+}
+console.log(initQuestionsList([1,2,3]))
