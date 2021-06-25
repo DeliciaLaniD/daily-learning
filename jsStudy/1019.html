@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // const dirname = 'D:/new/luban-compiler/dist/parse/ng'
+        // // 目标：D:/new/luban-compiler/templates/ng/button/button.com.html
+        // for(let i = 0; i < dirname.split('/').length; i++) {
+        //     if (dirname.split('/')[i] === 'dist') {
+        //         aa = (dirname.split('/').slice(0, i + 1)).join('/')
+        //         console.log(aa)
+        //         break;
+        //     }
+        // }
+        class Father {
+            constructor(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+        }
+        class Child extends Father {
+            eat() {
+                console.log(12313)
+            }
+        }
+        let child = new Child('小明', 12);
+        console.log(child)
+    </script>
+</body>
+</html>
