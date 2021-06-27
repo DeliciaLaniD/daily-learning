@@ -14,24 +14,24 @@
 
 // 输入：nums = [1]
 // 输出：[[1]]
-function dfs(nums, idx, arr, result) {
-    debugger;
-    if (arr.length === nums.length) {
-        result.push(arr);
-        return;
-    }
-    for (let i = idx; i < nums.length; i++) {
-        if (arr.length === nums.length) {
-            arr.pop();
-        }
-        arr.push(nums[i]);
-        i += 1;
-        dfs(nums, i, arr, result);
-    }
-}
 function initQuestionsList(nums) {
     var result = [];
-    dfs(nums, 0, [], result);
+    dfs(nums, [], result);
     return result;
 }
+function dfs(nums, arr, result) {
+    if (arr.length === nums.length) {
+        result.push(arr.slice(0));
+        return;
+    }
+    for (let i = 0; i < nums.length; i++) {
+        if (arr.includes(nums[i])) {
+            continue;
+        }
+        arr.push(nums[i]);
+        dfs(nums, arr, result);
+        arr.pop();
+    }
+}
+
 console.log(initQuestionsList([1,2,3]))
