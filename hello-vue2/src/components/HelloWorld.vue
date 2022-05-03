@@ -1,113 +1,112 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
+  <div>
+     <el-table
+        :data="page_datas"
+        border
+        style="width: 100%"
+        ref="multipleTable"
+      tooltip-effect="dark"
+      @selection-change="handleSelectionChange"
+      @row-click="handleclick"
+      :row-style="rowClass"
+      row-key="id">
+        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <!-- <el-table-column prop="id" label="ID" width="80"></el-table-column> -->
+        <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
+        <el-table-column prop="name" label="创建人"></el-table-column>
+        <el-table-column prop="tel" label="落箱电话" width="110" align="center"></el-table-column>
+        <el-table-column prop="number" label="预约号" width="110"></el-table-column>
+        <el-table-column prop="test" label="预约号条码" width="110"></el-table-column>
+        <el-table-column prop="address" label="起始地"></el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
+import child from './child.vue'
 export default {
-  name: 'HelloWorld',
+  components: {
+    child
+  },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      page_datas: [
+        {
+          id: 1,
+          name: 'test',
+          tel: 123,
+          number: 123,
+          test: '234234',
+          address: 'beijing'
+        },
+        {
+          id: 2,
+          name: 'test',
+          tel: 123,
+          number: 123,
+          test: '234234',
+          address: 'beijing'
+        },
+        {
+          id: 3,
+          name: 'test',
+          tel: 123,
+          number: 123,
+          test: '234234',
+          address: 'beijing'
+        },{
+          id: 4,
+          name: 'test',
+          tel: 123,
+          number: 123,
+          test: '234234',
+          address: 'beijing'
+        }
+      ],
+      currentRow: null,
+      selectRow: [],
+      multipleSelection:[]
+    }
+  },
+  watch: {
+    multipleSelection(data) {  //存储选中的row
+      this.selectRow = [];
+      if (data.length > 0) {
+        data.forEach((item, index) => {
+          this.selectRow.push(item.id);
+        });
+      }
+    }
+  },
+  methods: {
+    handleCurrentChange(val) {
+      console.log('%c 🍕 val: ', 'font-size:20px;background-color: #2EAFB0;color:#fff;', val);
+      this.currentRow = val;
+    },
+    rowClass({ row, rowIndex }) {
+      if (this.selectRow.includes(row.id)) {
+        return { "background-color": "rgba(185, 221, 249, 0.75)" };
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      console.log(val, "多选");
+    },
+    handleclick(data) {
+      console.log('%c 🍰 data: ', 'font-size:20px;background-color: #F5CE50;color:#fff;', data);
+
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+<style>
+  .el-table{
+   width: 1163px; 
+   margin: 0 auto;
+  }
+  .el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell {
+    background-color: rgba(185, 221, 249, 0.75);
+  }
 </style>
+

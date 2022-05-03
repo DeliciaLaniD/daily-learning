@@ -3,5 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/simple-rxjs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vue" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vue-interpretation" vcs="Git" />
   </component>
 </project>

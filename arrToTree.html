@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let arr = [
+            {id: 1, name: '部门1', pid: 0},
+            {id: 2, name: '部门2', pid: 1},
+            {id: 3, name: '部门3', pid: 1},
+            {id: 4, name: '部门4', pid: 3},
+            {id: 5, name: '部门5', pid: 4},
+        ]
+        let map = new Map();
+        for (let obj of arr) {
+            map.set(obj.id, {...obj, children: []});
+        }
+        let root;
+        for (let obj of map) {
+            let node = map.get(obj[1].pid);
+            console.log('%c 🍋 obj: ', 'font-size:20px;background-color: #4b4b4b;color:#fff;', obj);
+            if (!map[obj[0]]) {
+                root = obj[1];
+            } else {
+                node.children.push(obj[1]);
+            }
+        }
+        console.log(root);
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function isEqual(lh, rh) {
+    //引用相同
+    if (lh === rh) {
+        return true;
+    }
+    //类型不同，肯定不同，可以提前返回
+    if (typeof lh != typeof rh) {
+        return false
+    }
+    //类型不同，肯定不同，可以提前返回
+    if (Array.isArray(lh) != Array.isArray(rh)) {
+        return false
+    }
+    //原始类型比较
+    if (typeof lh != 'object' && typeof rh != "object" && !Array.isArray(lh) && !Array.isArray(rh))
+        return lh == rh
+    //数组类型比较
+    if (Array.isArray(lh) && Array.isArray(rh)) {
+        let m = lh.length
+        let n = rh.length
+        if (m != n) return false
+        for (let i in lh) {
+            if (!isEqual(lh[i], rh[i])) {
+                return false
+            }
+        }
+        return true
+    }
+
+    //对象类型比较，就是每个字段比较
+    let lhNames = Object.getOwnPropertyNames(lh)
+    let rhNames = Object.getOwnPropertyNames(rh)
+    if (lhNames.length != rhNames.length) {
+        return false
+    }
+    for (let prop of lhNames) {
+        if (!isEqual(lh[prop], rh[prop])) {
+            return false
+        }
+    }
+    return true
+}
+    </script>
+</body>
+</html>
